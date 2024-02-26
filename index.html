@@ -1,1 +1,32 @@
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.CvType;
+import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.core.CvException;
 
+public class ImageComparison {
+    public static void main(String[] args) {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        Mat PH1 = Imgcodecs.imread("basic.jpg");
+        Mat PH2 = Imgcodecs.imread("images/d.jpg");
+
+        if (PH1.size().equals(PH2.size())) {
+            Mat diff = new Mat();
+            Core.subtract(PH1, PH2, diff);
+            Mat[] channels = new Mat[3];
+            Core.split(diff, channels);
+
+            Mat b = channels[0];
+            Mat g = channels[1];
+            Mat r = channels[2];
+
+            if (Core.countNonZero(b) == 0 && Core.countNonZero(g) == 0 && Core.countNonZero(r) == 0) {
+                System.out.println("The images are completely equal");
+            } else {
+                System.out.println("The images are not equal");
+            }
+        }
+    }
+}
